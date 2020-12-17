@@ -9,7 +9,6 @@ import com.xxx.transfermanagerstudy.Constant;
 import com.xxx.transfermanagerstudy.service.FileOperationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
@@ -24,13 +23,18 @@ public class FileOperationServiceImpl implements FileOperationService {
     @Autowired
     private AmazonS3 amazonS3;
 
+    private static final String OBJECT_KEY = "nginxtest.tar";
+
+    private static final String SOURCE_FILE = "/root/source/" + OBJECT_KEY;
+    private static final String TARGET_FILE = "C:\\Users\\HP\\Desktop\\" + OBJECT_KEY;
+
     /**
      * 上传文件
      */
     @Override
     public void uploadFile() {
         TransferManager manager = TransferManagerBuilder.standard().withS3Client(amazonS3).build();
-        Upload upload = manager.upload(Constant.BUCKET_NAME, "kodexporer_stable.tar", new File("D:\\image\\各种镜像\\容器镜像\\500M 容器镜像\\kodexporer_stable.tar"));
+        Upload upload = manager.upload(Constant.BUCKET_NAME, OBJECT_KEY, new File(SOURCE_FILE));
 
         try {
             upload.waitForUploadResult();
@@ -45,7 +49,7 @@ public class FileOperationServiceImpl implements FileOperationService {
     @Override
     public void downloadFile() {
         TransferManager manager = TransferManagerBuilder.standard().withS3Client(amazonS3).build();
-        Download download = manager.download(Constant.BUCKET_NAME, "kodexporer_stable.tar", new File("/root/xiong/kodexporer_stable.tar"));
+        Download download = manager.download(Constant.BUCKET_NAME, OBJECT_KEY, new File(TARGET_FILE));
         try {
             download.waitForCompletion();
         } catch (InterruptedException e) {

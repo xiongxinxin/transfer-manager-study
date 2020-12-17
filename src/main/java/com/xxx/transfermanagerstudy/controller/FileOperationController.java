@@ -17,7 +17,7 @@ public class FileOperationController {
 
     @RequestMapping("/downloadFile")
     public void downloadFile() {
-
+        fileService.downloadFile();
     }
 
 }
